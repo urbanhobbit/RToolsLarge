@@ -417,10 +417,23 @@ with st.sidebar.expander("1. Data Selection", expanded=True):
 
     # Countries
     countries = sorted(dom_df["Country"].unique())
+    
+    # Track domain changes to reset country selection
+    if "last_selected_domain" not in st.session_state:
+        st.session_state.last_selected_domain = selected_domain
+        # Initialize selection to all countries
+        st.session_state.selected_countries_key = countries
+    
+    # If domain changed, reset selection to all new countries
+    if st.session_state.last_selected_domain != selected_domain:
+        st.session_state.selected_countries_key = countries
+        st.session_state.last_selected_domain = selected_domain
+
     selected_countries = st.multiselect(
         "Countries",
         countries,
-        default=countries,
+        key="selected_countries_key",
+        default=None, # Default is handled by key/session_state
     )
 
     # Year range
